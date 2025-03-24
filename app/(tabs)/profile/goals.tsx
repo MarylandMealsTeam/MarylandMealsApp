@@ -25,67 +25,65 @@ import { VStack } from "@/components/ui/vstack";
 import { Center } from "@/components/ui/center";
 import { Divider } from "@/components/ui/divider";
 import {
-    Select,
-    SelectTrigger,
-    SelectInput,
-    SelectIcon,
-    SelectPortal,
-    SelectBackdrop,
-    SelectContent,
-    SelectDragIndicatorWrapper,
-    SelectDragIndicator,
-    SelectItem,
-    SelectScrollView,
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectItem,
+  SelectScrollView,
 } from "@/components/ui/select"
 import { UserContext } from "@/components/navigation/UserProvider";
 import { generateGoalWeight, update } from "@/api/updateSession";
 import { suggestMacros } from "@/api/aiSession";
 
 export default function Goals() {
-    const { user, setUser } = useContext(UserContext);
-    const goalsDescription = "Set and customize weight and macro goals for your fitness journey.";
-    const macros = user.goalMacros;
-    const [goalWeight, setGoalWeight] = useState(user.goalWeight);
+  const { user, setUser } = useContext(UserContext);
+  const goalsDescription = "Set and customize weight and macro goals for your fitness journey.";
+  const macros = user.goalMacros;
+  const [goalWeight, setGoalWeight] = useState(user.goalWeight);
 
-
-    const WeightGoalsView = () => {
-
-    const WeightRow = ({
-      title,
-      weight,
-    }: {
-      title: string;
-      weight?: number;
-    }) => {
-      const weights = Array.from({ length: 200 }, (_, i) => (i + 1) * 2.5);
-      const isGoalWeight = title.toLowerCase().includes("goal");
-
-            return (
-                <HStack className="justify-between w-full py-1 items-center">
-                    <Text>{title}</Text>
-                    <Select onValueChange={(weight) => update(isGoalWeight ? { goalWeight: parseInt(weight) } : { currentWeight: parseInt(weight) })}>
-                        <SelectTrigger variant="outline" size="md" className="border-0">
-                            <SelectInput placeholder={weight + " lbs"} className="text-primary-500" />
-                            <SelectIcon className="mr-1" as={ChevronDownIcon} />
-                        </SelectTrigger>
-                        <SelectPortal snapPoints={[50]}>
-                            <SelectBackdrop />
-                            <SelectContent>
-                                <SelectDragIndicatorWrapper>
-                                    <SelectDragIndicator />
-                                </SelectDragIndicatorWrapper>
-                                <SelectScrollView>
-                                    {weights.map((wt, index) => <SelectItem label={wt + " lbs"} value={wt.toString()} key={index} />)}
-                                </SelectScrollView>
-                            </SelectContent>
-                        </SelectPortal>
-                    </Select>
-                </HStack>
-            );
-        }
+  const WeightRow = ({
+    title,
+    weight,
+  }: {
+    title: string;
+    weight?: number;
+  }) => {
+    const weights = Array.from({ length: 200 }, (_, i) => (i + 1) * 2.5);
+    const isGoalWeight = title.toLowerCase().includes("goal");
 
     return (
-      <SectionView title="Weight Goals" icon={SparklesIcon} action={() => {}}>
+      <HStack className="justify-between w-full py-1 items-center">
+        <Text>{title}</Text>
+        <Select onValueChange={(weight) => update(isGoalWeight ? { goalWeight: parseInt(weight) } : { currentWeight: parseInt(weight) })}>
+          <SelectTrigger variant="outline" size="md" className="border-0">
+            <SelectInput placeholder={weight + " lbs"} className="text-primary-500" />
+            <SelectIcon className="mr-1" as={ChevronDownIcon} />
+          </SelectTrigger>
+          <SelectPortal snapPoints={[50]}>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectDragIndicatorWrapper>
+                <SelectDragIndicator />
+              </SelectDragIndicatorWrapper>
+              <SelectScrollView>
+                {weights.map((wt, index) => <SelectItem label={wt + " lbs"} value={wt.toString()} key={index} />)}
+              </SelectScrollView>
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+      </HStack>
+    );
+  }
+  const WeightGoalsView = () => {
+
+    return (
+      <SectionView title="Weight Goals" icon={SparklesIcon} action={() => { }}>
         <Center className="w-full h-fit">
           <WeightRow title="Current Weight" weight={user.currentWeight} />
           <Divider />
@@ -96,31 +94,19 @@ export default function Goals() {
   };
 
   const fetchMacroSuggestions = async () => {
-    const context = `Height: 5 foot 7, Current Weight: ${user.currentWeight}, Goal Weight: ${user.goalWeight}`;
-    const macrosData = await suggestMacros(context);
+    const macrosData = await suggestMacros();
+    console.log(macrosData);
     const newMacros = JSON.parse(macrosData);
 
     macros.calories = newMacros.calories;
     macros.protein = newMacros.protein;
     macros.carbs = newMacros.carbs;
     macros.fats = newMacros.fats;
-        return (
-            <SectionView title="Weight Goals" icon={SparklesIcon} action={async () => {
-                const goalWeight = await generateGoalWeight();
-                if (goalWeight) {
-                    setGoalWeight(goalWeight);
-                }
-            }}>
-                <Center className="w-full h-fit">
-                    <WeightRow title="Current Weight" weight={user.currentWeight} />
-                    <Divider />
-                    <WeightRow title="Goal Weight" weight={goalWeight} />
-                </Center>
+    console.log(macrosData);
 
-            </SectionView>
-        );
+    console.log("FETCHING")
 
-    updateGoalMacros(macros);
+    update({ goalMacros: macros });
   };
 
   const MacroGoals = () => {
@@ -150,9 +136,9 @@ export default function Goals() {
           macros.fats = amt;
         }
 
-                console.log(macros);
-                update({ goalMacros: macros });
-            }
+        console.log(macros);
+        update({ goalMacros: macros });
+      }
 
       return (
         <HStack className="justify-between w-full py-1 items-center">
@@ -174,19 +160,19 @@ export default function Goals() {
                 <SelectScrollView>
                   {isCalories
                     ? calories.map((cal, index) => (
-                        <SelectItem
-                          label={cal + " Cal"}
-                          value={cal.toString()}
-                          key={index}
-                        />
-                      ))
+                      <SelectItem
+                        label={cal + " Cal"}
+                        value={cal.toString()}
+                        key={index}
+                      />
+                    ))
                     : grams.map((gram, index) => (
-                        <SelectItem
-                          label={gram + " g"}
-                          value={gram.toString()}
-                          key={index}
-                        />
-                      ))}
+                      <SelectItem
+                        label={gram + " g"}
+                        value={gram.toString()}
+                        key={index}
+                      />
+                    ))}
                 </SelectScrollView>
               </SelectContent>
             </SelectPortal>
@@ -199,9 +185,7 @@ export default function Goals() {
       <SectionView
         title="Daily Macro Goals"
         icon={SparklesIcon}
-        action={() => {
-          fetchMacroSuggestions();
-        }}
+        action={fetchMacroSuggestions}
       >
         <Center className="w-full h-fit">
           <MacroRow macro="calorie" amount={user.goalMacros.calories} />

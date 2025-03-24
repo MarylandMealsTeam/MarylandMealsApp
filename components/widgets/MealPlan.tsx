@@ -11,7 +11,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { Text } from "../ui/text";
 import { Heading } from "../ui/heading";
 import { View } from "../ui/view";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import FoodCard from "../cards/FoodCard";
 
 export interface MealPlanData {
@@ -27,6 +27,7 @@ export default function MealPlan({
   title: string;
   content: MealPlanData;
 }) {
+  console.log(content);
   const mealPlan: MealPlanData =
     typeof content === "string" ? JSON.parse(content) : content;
 

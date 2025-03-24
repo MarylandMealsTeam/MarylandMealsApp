@@ -142,41 +142,15 @@ export default function Dashboard() {
     consumed: Macros;
   } | null>();
   const isFocused = useIsFocused();
-  const [currentWeight, setCurrentWeight] = useState(0);
-  const [goalWeight, setGoalWeight] = useState(0);
   const [mealPlan, setMealPlan] = useState<MealPlanData>();
 
-  const userDetails =
-    "Current Weight: " +
-    currentWeight +
-    "\nGoal Weight: " +
-    goalWeight +
-    "\nCalorie Goal: " +
-    macros?.target.calories +
-    " calories\nProtein Goal: " +
-    macros?.target.protein +
-    " grams \nCarb Goal: " +
-    macros?.target.carbs +
-    " grams \nFat Goal: " +
-    macros?.target.fats +
-    " grams";
+
 
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
     day: "numeric",
     weekday: undefined,
-  };
-
-  const generateMealPlan = async () => {
-    getUser()
-      .then((user) => {
-        setCurrentWeight(user.currentWeight);
-        setGoalWeight(user.goalWeight);
-      })
-      .then(() =>
-        getMealPlan(userDetails).then((mealPlan) => setMealPlan(mealPlan))
-      );
   };
 
   useEffect(() => {
@@ -186,7 +160,7 @@ export default function Dashboard() {
     getMacros(date).then((macros) => setMacros(macros));
   }, [date, log, isFocused]);
   useEffect(() => {
-    generateMealPlan();
+    getMealPlan().then((mealPlan) => setMealPlan(mealPlan));
   }, [isFocused]);
 
   return (
