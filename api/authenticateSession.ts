@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const session = axios.create({
   baseURL:
@@ -9,11 +9,16 @@ const session = axios.create({
 });
 
 export function register(name: string, email: string, password: string) {
-  session.post(process.env.EXPO_PUBLIC_REGISTER_URL!, {
-    name,
-    email,
-    password,
-  });
+  try {
+    const res = session.post(process.env.EXPO_PUBLIC_REGISTER_URL!, {
+      name,
+      email,
+      password,
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 export async function login(email: string, password: string) {
@@ -24,7 +29,6 @@ export async function login(email: string, password: string) {
     });
     return true;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

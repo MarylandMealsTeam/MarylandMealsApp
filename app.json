@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MarylandMeal",
-    "slug": "MarylandMeal",
-    "version": "1.0.0",
+    "name": "MarylandMeals",
+    "slug": "marylandmeals",
+    "version": "0.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/MarylandMeal.png",
     "scheme": "myapp",
@@ -15,10 +15,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.MarylandMeal",
+      "bundleIdentifier": "com.marylandmeals.iosApp",
       "appleTeamId": "95P6AMSZ3D",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.43338451273-ua51jdq1juhcus1nlpckjoqcan2imn87"
+            ]
+          }
+        ]
       }
     },
     "android": {
@@ -26,7 +33,7 @@
         "foregroundImage": "./assets/images/MarylandMeal.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.MarylandMeal"
+      "package": "com.maryandmeals.androidApp"
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +49,12 @@
           "image": "./assets/images/MarylandMeal.png",
           "imageWidth": 200
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.43338451273-ua51jdq1juhcus1nlpckjoqcan2imn87"
+        }
       ]
     ],
     "experiments": {
@@ -52,7 +65,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "554a437c-4b17-4bd8-bf8a-c4422348c036"
+        "projectId": "5f56c8d8-beb7-402b-8400-c74419b2f1c1"
       }
     },
     "runtimeVersion": {
@@ -60,6 +73,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/554a437c-4b17-4bd8-bf8a-c4422348c036"
-    }
+    },
+    "owner": "marylandmeals"
   }
 }

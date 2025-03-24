@@ -13,7 +13,7 @@ import ContentLayout from "@/components/layouts/ContentLayout";
 import { useIsFocused } from "@react-navigation/native";
 import MealLog from "@/components/widgets/MealLog";
 import Macros from "@/interfaces/Macros";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import { Card } from "@/components/ui/card";
 import { CircularProgressBase } from "react-native-circular-progress-indicator";
 import { Divider } from "@/components/ui/divider";
@@ -58,7 +58,7 @@ const MacroProgressView = ({
     //   }
     // </Grid>
     <Card variant="elevated" className="h-60 rounded-xl">
-      <HStack space="lg" className="w-fit m-auto">
+      <HStack space="lg" className="w-full m-auto justify-between">
         <Center className="w-[40%] pl-2">
           <CircularProgressBase
             {...props}
@@ -194,16 +194,8 @@ export default function Dashboard() {
     <ContentLayout data={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack className="w-full px-5" space="2xl">
-          <HStack className="w-full items-center justify-start">
-            <Calendar date={date} setDate={setDate} placement="bottom">
-              <Heading size="3xl" className="text-primary-500">
-                {date.toLocaleDateString("en-us", options)}
-              </Heading>
-              <Icon
-                as={ChevronDownIcon}
-                className="text-primary-500 aspect-square w-8"
-              ></Icon>
-            </Calendar>
+          <HStack className="w-full items-center justify-start" >
+            <Calendar date={date} setDate={setDate} placement="bottom" />
           </HStack>
           <VStack>
             {/* needs to be fixed! - if macro exceeds the target then it glitches! also animation is glitchy!*/}

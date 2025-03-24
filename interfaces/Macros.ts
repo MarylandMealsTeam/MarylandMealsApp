@@ -5,8 +5,7 @@ export default interface Macros {
   carbs: number;
 }
 
-
-export const emptyMacros = {
+export const emptyMacros: Macros = {
   calories: 0,
   fats: 0,
   protein: 0,

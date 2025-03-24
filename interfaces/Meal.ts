@@ -1,4 +1,4 @@
-export interface Meal {
+export default interface Meal {
   id: number;
   menu_item: {
     id: number;

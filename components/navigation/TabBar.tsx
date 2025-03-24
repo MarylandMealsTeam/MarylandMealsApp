@@ -8,7 +8,7 @@ import { Icon } from '../ui/icon';
 import { Center } from '../ui/center';
 import { HomeIcon, UserIcon, UtensilsIcon } from 'lucide-react-native';
 
-export default function Tabbar({ state, descriptors, navigation }: BottomTabBarProps) {
+export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
     return (
         <View className="w-full pb-safe flex-row px-4 bg-slate-100 border-t border-outline-200">

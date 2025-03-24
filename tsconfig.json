@@ -2,7 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "typeRoots": ["./server/types", "./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types"],
     "esModuleInterop": true,
     "moduleResolution": "node",
     "paths": {
@@ -18,14 +18,14 @@
     "expo-env.d.ts",
     "server/app.ts",
     "lib/routes/users.mjs",
-    "server/models/UserModel.ts",
+    "../MarylandMealsAPI/src/models/UserModel.ts",
     "scripts/createUser.mjs",
     "server/mongodb.ts",
     "lib/auth.js",
     "nativewind-env.d.ts",
     "react-native.config.js",
     "server/auth.ts",
-    "server/models/FoodLogModel.ts",
+    "../MarylandMealsAPI/src/models/FoodLogModel.ts",
     "server/routes/user/user.ts"
   ]
 }

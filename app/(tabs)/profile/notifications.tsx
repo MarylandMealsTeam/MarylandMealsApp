@@ -22,7 +22,7 @@ export default function Notifications() {
         return (
             <SectionView title="Alerts">
                 <Center className="w-full h-fit mt-2">
-                    <VStack space="lg">
+                    <VStack space="lg" className="w-full">
                         <HStack space="md" className="w-full items-center justify-between">
                             <Text size="md">Allow suggestions</Text>
                             <Switch trackColor={color} />

@@ -44,7 +44,8 @@ import ReorderableList, {
 } from 'react-native-reorderable-list';
 import { Pressable } from "@/components/ui/pressable";
 import AllergenView from "@/components/widgets/AllergenView";
-import { updateAllergens, updateDiningHallPreferences } from "@/api/updateSession";
+import { update } from "@/api/updateSession";
+import { DiningHallType } from "@/interfaces/User";
 
 
 export default function Preferences() {
@@ -67,10 +68,10 @@ export default function Preferences() {
         const [diningOrder, setDiningOrder] = useState(user.diningHallPreferences);
 
         useEffect(() => {
-            updateDiningHallPreferences(diningOrder);
+            update({ diningHallPreferences: diningOrder });
         }, [diningOrder]);
 
-        const Card = memo(({ item }: { item: string }) => {
+        const Card = memo(({ item }: { item: DiningHallType }) => {
             const drag = useReorderableDrag();
 
             return (
@@ -87,10 +88,10 @@ export default function Preferences() {
             );
         });
 
-        const renderItem = ({ item }: ListRenderItemInfo<string>) => (<Card item={item} />);
+        const renderItem = ({ item }: ListRenderItemInfo<DiningHallType>) => (<Card item={item} />);
 
         const handleReorder = ({ from, to }: ReorderableListReorderEvent) => {
-            setDiningOrder((items) => reorderItems(items, from, to));
+            setDiningOrder((items: DiningHallType[]) => reorderItems(items, from, to));
         };
 
         return (
@@ -102,7 +103,6 @@ export default function Preferences() {
                         keyExtractor={(item) => item}
                         scrollEnabled={false}
                         onReorder={handleReorder}
-                    // onDragEnd={({ data }) => setDiningOrder(data)}
                     />
                 </Center>
             </SectionView>
@@ -122,14 +122,14 @@ export default function Preferences() {
 
 
     const AllergensView = () => {
-        const t = user.allergens?.map((allergen) => allergens.find((a) => a.name === allergen)).filter((item): item is Allergen => item !== undefined) || [];
+        const t = user.allergens?.map((allergen: string) => allergens.find((a) => a.name === allergen)).filter((item): item is Allergen => item !== undefined) || [];
         const [userAllergens, setUserAllergens] = useState<Allergen[]>(t);
         const [showAllergens, setShowAllergens] = useState(false);
 
         const handleClose = () => setShowAllergens(false);
 
         useEffect(() => {
-            updateAllergens(userAllergens);
+            update({ allergens: userAllergens.map((ua) => ua.name) });
         }, [userAllergens]);
 
 
@@ -179,7 +179,7 @@ export default function Preferences() {
                         />
                     </VStack>
                 </SectionView>
-                <Actionsheet isOpen={showAllergens} onClose={handleClose} snapPoints={[50]}>
+                <Actionsheet isOpen={showAllergens} onClose={handleClose}>
                     <ActionsheetBackdrop />
                     <ActionsheetContent>
                         <ActionsheetDragIndicatorWrapper>

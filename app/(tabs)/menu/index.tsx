@@ -7,7 +7,6 @@ import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import React from "react";
 import { Center } from "@/components/ui/center";
-import { Meal } from "@/interfaces/Meal";
 import { Spinner } from "@/components/ui/spinner";
 import ContentLayout from "@/components/layouts/ContentLayout";
 import { getMenu, resetMenu } from "@/api/menuSession";
@@ -15,6 +14,7 @@ import { HStack } from "@/components/ui/hstack";
 import FilterView from "@/components/widgets/FilterView";
 import HelpButton from "@/components/widgets/HelpButton";
 import { Allergen } from "@/types/Allergen";
+import Meal from "@/interfaces/Meal";
 
 const HeaderView = ({ setSearchText }: { setSearchText: Dispatch<SetStateAction<string>> }) => {
 
@@ -68,7 +68,7 @@ export default function Food() {
   const fetchItems = async () => {
     if (refreshing || searchText !== "") { return; }
     setRefreshing(true);
-    const data = await getMenu({ diningHalls, allergens });
+    const data = await getMenu(diningHalls, allergens);
     setMenu(data as Meal[]);
     setRefreshing(false);
   };
@@ -116,7 +116,7 @@ export default function Food() {
     <ContentLayout data={1}>
       <FlatList
         className="px-5"
-        data={menu.filter((food) => food.menu_item.name.toLowerCase().includes(searchText.toLowerCase()))}
+        data={menu?.filter((food) => food.menu_item.name.toLowerCase().includes(searchText.toLowerCase()))}
         renderItem={FoodLogMemoView}
         keyExtractor={(food) => food.id.toString()}
         contentContainerStyle={{ flexGrow: 1 }}

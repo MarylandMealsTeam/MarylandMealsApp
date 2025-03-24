@@ -1,15 +1,17 @@
 import { Allergen } from "@/types/Allergen";
 import session from "./userSession";
 import Macros from "@/interfaces/Macros";
+import User from "@/interfaces/User";
+import { AxiosError } from "axios";
 
-export async function updateName(name: string) {
+export async function update(updatedUser: Partial<User>) {
   try {
     const res = await session.patch(
-      process.env.EXPO_PUBLIC_UPDATE_URL! + "/name",
-      { name }
+      process.env.EXPO_PUBLIC_UPDATE_URL!,
+      updatedUser
     );
 
-    console.log("Successfully updated name!");
+    console.log("Successfully updated user!");
     return true;
   } catch (error) {
     console.log(error);
@@ -17,63 +19,27 @@ export async function updateName(name: string) {
   }
 }
 
-export async function updateWeight(weights: {
-  currentWeight?: number;
-  targetWeight?: number;
-}) {
+export async function generateMacros() {
   try {
     const res = await session.patch(
-      process.env.EXPO_PUBLIC_UPDATE_URL! + "/weight",
-      weights
+      process.env.EXPO_PUBLIC_UPDATE_URL +
+        process.env.EXPO_PUBLIC_GENERATE_MACROS_URL!
     );
-    console.log("Successfully updated name!");
-    return true;
+    return res.data.macros as Macros;
   } catch (error) {
     console.log(error);
-    return false;
+    return null;
   }
 }
 
-export async function updateGoalMacros(macros: Macros) {
+export async function generateGoalWeight() {
   try {
     const res = await session.patch(
-      process.env.EXPO_PUBLIC_UPDATE_URL! + "/macros",
-      { macros }
+      process.env.EXPO_PUBLIC_UPDATE_URL +
+        process.env.EXPO_PUBLIC_GENERATE_GOAL_WEIGHT_URL!
     );
-    console.log("Successfully updated macros!");
-    return true;
+    return res.data.newGoalWeight;
   } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-export async function updateAllergens(allergens: Allergen[]) {
-  try {
-    const allergenNames = allergens.map((a) => a.name);
-    const res = await session.patch(
-      process.env.EXPO_PUBLIC_UPDATE_URL! + "/allergens",
-      { allergenNames }
-    );
-    console.log("Successfully updated allergens!");
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-export async function updateDiningHallPreferences(diningHallPreferences: string[]) {
-  try {
-    const res = await session.patch(
-      process.env.EXPO_PUBLIC_UPDATE_URL! + "/diningHallPreferences",
-      { diningHallPreferences }
-    );
-    console.log("Successfully updated dining halls!");
-    console.log("CHANGED: " + diningHallPreferences);
-    return true;
-  } catch (error) {
-    console.log(error);
     return false;
   }
 }

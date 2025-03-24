@@ -10,7 +10,7 @@ import { ChevronRightIcon, LucideIcon } from "lucide-react-native";
 export default function SettingsCard({ icon, subText, isLast }: { icon: LucideIcon | typeof Icon, subText: string, isLast?: boolean }) {
     return (
         <>
-            <Pressable className="h-fit" onPress={() => router.navigate(("/(tabs)/profile/" + subText.toLowerCase().replace(" ", "_")) as Href)}>
+            <Pressable className="h-fit w-full" onPress={() => router.navigate(("/(tabs)/profile/" + subText.toLowerCase().replace(" ", "_")) as Href)}>
                 <HStack
                     space="2xl"
                     className="justify-between items-center w-full h-fit py-3 px-2"

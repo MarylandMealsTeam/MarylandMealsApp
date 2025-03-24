@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import { Allergen } from "@/types/Allergen";
 
 let menu: Meal[] = [];
@@ -11,19 +11,12 @@ const session = axios.create({
   withCredentials: true,
 });
 
-export async function getMenu({
-  diningHalls,
-  allergens,
-}: {
-  diningHalls: string[];
-  allergens: Allergen[];
-}) {
+export async function getMenu(diningHalls: string[], allergens: Allergen[]) {
   try {
-    page++;
     const res = await session.get(process.env.EXPO_PUBLIC_DAILYITEMS_URL!, {
       params: {
         date: "2025-01-28",
-        page: page,
+        page: ++page,
         // dining_halls: diningHalls.join(","),
         // allergens: allergens.map((a) => a.id).join(","),
       },
@@ -31,8 +24,8 @@ export async function getMenu({
     menu.push(...res.data.results);
     return menu;
   } catch (error) {
-    (error);
-    return null;
+    console.log(error);
+    return [];
   }
 }
 
@@ -42,14 +35,12 @@ export function getMenuItem(id: string) {
 
 export async function getFood(id: number) {
   try {
-    const res = await session.get(
-      process.env.EXPO_PUBLIC_DAILYITEMS_URL!, {
-        params: {
-          date: "2025-01-28",
-          id: id
-        }
-      }
-    );
+    const res = await session.get(process.env.EXPO_PUBLIC_DAILYITEMS_URL!, {
+      params: {
+        date: "2025-01-28",
+        id: id,
+      },
+    });
 
     return res.data;
   } catch (error) {

@@ -105,15 +105,15 @@ export default function FilterView() {
             <Button variant="link" size="md" className="rounded-md" onPress={() => setShowActionsheet(true)}>
                 <ButtonIcon as={FilterIcon} className="text-primary-500" />
             </Button>
-            <Actionsheet isOpen={showActionsheet} onClose={handleClose} snapPoints={[50]}>
+            <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
                 <ActionsheetBackdrop />
                 <ActionsheetContent>
                     <ActionsheetDragIndicatorWrapper>
                         <ActionsheetDragIndicator />
                     </ActionsheetDragIndicatorWrapper>
-                    <FormControl className="w-full h-full px-5 pt-5">
+                    <FormControl className="w-full h-fit px-5 pt-5">
                         <HelpButton title="Select Filters" message="Filter menu items by selecting specific dining halls or excluding meals with certain allergens to customize your dining experience. Update Preferences saves your filter selections to your profile as defaults across the app, Reset Filters reverts to your saved profile preferences, and Clear Filters removes all active filters from the Menu page to display all available meals at once, helping you find options that match your dietary needs quickly and efficiently." className="h-fit z-10 absolute right-5 top-5" />
-                        <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pb-safe" className="w-full h-full z-0">
+                        <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pb-safe" className="w-full h-fit z-0">
                             <VStack space="4xl">
                                 <CheckboxFilterView title="Dining Halls" options={diningHalls} values={selectedDiningHalls} setValues={setSelectedDiningHalls} />
                                 <CheckboxFilterView title="Allergens" options={allergens.map((allergen) => allergen.name)} values={selectedAllergens} setValues={setSelectedAllergens} />

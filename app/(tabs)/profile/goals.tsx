@@ -25,33 +25,30 @@ import { VStack } from "@/components/ui/vstack";
 import { Center } from "@/components/ui/center";
 import { Divider } from "@/components/ui/divider";
 import {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-  SelectScrollView,
-} from "@/components/ui/select";
-import { User } from "@/interfaces/User";
-import { getUser } from "@/api/userSession";
-import { updateGoalMacros, updateWeight } from "@/api/updateSession";
-import Macros from "@/interfaces/Macros";
+    Select,
+    SelectTrigger,
+    SelectInput,
+    SelectIcon,
+    SelectPortal,
+    SelectBackdrop,
+    SelectContent,
+    SelectDragIndicatorWrapper,
+    SelectDragIndicator,
+    SelectItem,
+    SelectScrollView,
+} from "@/components/ui/select"
 import { UserContext } from "@/components/navigation/UserProvider";
+import { generateGoalWeight, update } from "@/api/updateSession";
 import { suggestMacros } from "@/api/aiSession";
 
 export default function Goals() {
-  const { user, setUser } = useContext(UserContext);
-  const goalsDescription =
-    "Set and customize weight and macro goals for your fitness journey.";
-  const macros = user.goalMacros;
+    const { user, setUser } = useContext(UserContext);
+    const goalsDescription = "Set and customize weight and macro goals for your fitness journey.";
+    const macros = user.goalMacros;
+    const [goalWeight, setGoalWeight] = useState(user.goalWeight);
 
-  const WeightGoalsView = () => {
-    const [selectedWeight, setSelectedWeight] = useState(0);
+
+    const WeightGoalsView = () => {
 
     const WeightRow = ({
       title,
@@ -63,46 +60,29 @@ export default function Goals() {
       const weights = Array.from({ length: 200 }, (_, i) => (i + 1) * 2.5);
       const isGoalWeight = title.toLowerCase().includes("goal");
 
-      return (
-        <HStack className="justify-between w-full py-1 items-center">
-          <Text>{title}</Text>
-          <Select
-            onValueChange={(weight) =>
-              updateWeight(
-                isGoalWeight
-                  ? { targetWeight: parseInt(weight) }
-                  : { currentWeight: parseInt(weight) }
-              )
-            }
-          >
-            <SelectTrigger variant="outline" size="md" className="border-0">
-              <SelectInput
-                placeholder={weight + " lbs"}
-                className="text-primary-500"
-              />
-              <SelectIcon className="mr-1" as={ChevronDownIcon} />
-            </SelectTrigger>
-            <SelectPortal snapPoints={[50]}>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                <SelectScrollView>
-                  {weights.map((wt, index) => (
-                    <SelectItem
-                      label={wt + " lbs"}
-                      value={wt.toString()}
-                      key={index}
-                    />
-                  ))}
-                </SelectScrollView>
-              </SelectContent>
-            </SelectPortal>
-          </Select>
-        </HStack>
-      );
-    };
+            return (
+                <HStack className="justify-between w-full py-1 items-center">
+                    <Text>{title}</Text>
+                    <Select onValueChange={(weight) => update(isGoalWeight ? { goalWeight: parseInt(weight) } : { currentWeight: parseInt(weight) })}>
+                        <SelectTrigger variant="outline" size="md" className="border-0">
+                            <SelectInput placeholder={weight + " lbs"} className="text-primary-500" />
+                            <SelectIcon className="mr-1" as={ChevronDownIcon} />
+                        </SelectTrigger>
+                        <SelectPortal snapPoints={[50]}>
+                            <SelectBackdrop />
+                            <SelectContent>
+                                <SelectDragIndicatorWrapper>
+                                    <SelectDragIndicator />
+                                </SelectDragIndicatorWrapper>
+                                <SelectScrollView>
+                                    {weights.map((wt, index) => <SelectItem label={wt + " lbs"} value={wt.toString()} key={index} />)}
+                                </SelectScrollView>
+                            </SelectContent>
+                        </SelectPortal>
+                    </Select>
+                </HStack>
+            );
+        }
 
     return (
       <SectionView title="Weight Goals" icon={SparklesIcon} action={() => {}}>
@@ -124,6 +104,21 @@ export default function Goals() {
     macros.protein = newMacros.protein;
     macros.carbs = newMacros.carbs;
     macros.fats = newMacros.fats;
+        return (
+            <SectionView title="Weight Goals" icon={SparklesIcon} action={async () => {
+                const goalWeight = await generateGoalWeight();
+                if (goalWeight) {
+                    setGoalWeight(goalWeight);
+                }
+            }}>
+                <Center className="w-full h-fit">
+                    <WeightRow title="Current Weight" weight={user.currentWeight} />
+                    <Divider />
+                    <WeightRow title="Goal Weight" weight={goalWeight} />
+                </Center>
+
+            </SectionView>
+        );
 
     updateGoalMacros(macros);
   };
@@ -155,8 +150,9 @@ export default function Goals() {
           macros.fats = amt;
         }
 
-        updateGoalMacros(macros);
-      }
+                console.log(macros);
+                update({ goalMacros: macros });
+            }
 
       return (
         <HStack className="justify-between w-full py-1 items-center">

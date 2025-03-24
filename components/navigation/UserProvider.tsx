@@ -1,5 +1,5 @@
 import { getUser } from "@/api/userSession";
-import { User } from "@/interfaces/User";
+import User from "@/interfaces/User";
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const UserContext = createContext<{ user: User, setUser: Dispatch<SetStateAction<User>> }>({ user: {} as User, setUser: () => {}});

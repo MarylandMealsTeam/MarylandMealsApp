@@ -21,7 +21,7 @@ import { Divider } from "@/components/ui/divider";
 import { isWeb } from "@gluestack-ui/nativewind-utils/IsWeb";
 import EditProfile from "@/components/widgets/EditProfile";
 import SettingsCard from "@/components/cards/SettingsCard";
-import { User } from "@/interfaces/User";
+import User from "@/interfaces/User";
 import { router } from "expo-router";
 import ContentLayout from "@/components/layouts/ContentLayout";
 import { View } from "@/components/ui/view";
