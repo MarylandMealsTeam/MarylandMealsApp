@@ -32,6 +32,11 @@ Next you will need to prebuild the native application. You can do this by runnin
 
 `source 'https://github.com/CocoaPods/Specs.git'`
 
+> After you have added this line, in the the ios folder run:
+
+`pod repo remove trunk`
+`pod install`
+
 Once everything is resolved, run:
 
 `npm run <platform>`
