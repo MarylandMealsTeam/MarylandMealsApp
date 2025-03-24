@@ -23,6 +23,8 @@ export async function getFoodLog(date: Date) {
   }
 }
 
+
+
 // fix async
 export async function getMacros(date: Date) {
   try {
