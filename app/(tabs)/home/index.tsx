@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Calendar from "@/components/widgets/Calendar";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { HStack } from "@/components/ui/hstack";
@@ -13,26 +13,36 @@ import ContentLayout from "@/components/layouts/ContentLayout";
 import { useIsFocused } from "@react-navigation/native";
 import MealLog from "@/components/widgets/MealLog";
 import Macros from "@/interfaces/Macros";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import { Card } from "@/components/ui/card";
 import { CircularProgressBase } from "react-native-circular-progress-indicator";
 import { Divider } from "@/components/ui/divider";
 import { ChevronDownIcon } from "lucide-react-native";
 import { Icon } from "@/components/ui/icon";
+import MealPlan from "@/components/widgets/MealPlan";
+import { UserContext } from "../../../components/navigation/UserProvider";
+import { getUser } from "@/api/userSession";
+import { getMealPlan } from "@/api/aiSession";
+import { MealPlanData } from "@/components/widgets/MealPlan";
 
-
-const MacroProgressView = ({ target, consumed }: { target: Macros, consumed: Macros }) => {
+const MacroProgressView = ({
+  target,
+  consumed,
+}: {
+  target: Macros;
+  consumed: Macros;
+}) => {
   const macros = [
     { name: "Calories", target: target.calories, consumed: consumed.calories },
     { name: "Protein", target: target.protein, consumed: consumed.protein },
     { name: "Carbs", target: target.carbs, consumed: consumed.carbs },
-    { name: "Fats", target: target.fats, consumed: consumed.fats }
+    { name: "Fats", target: target.fats, consumed: consumed.fats },
   ];
 
   const props = {
     activeStrokeWidth: 25,
     inActiveStrokeWidth: 25,
-    inActiveStrokeOpacity: 0.2
+    inActiveStrokeOpacity: 0.2,
   };
 
   return (
@@ -57,8 +67,8 @@ const MacroProgressView = ({ target, consumed }: { target: Macros, consumed: Mac
             radius={80}
             activeStrokeWidth={15}
             inActiveStrokeWidth={15}
-            activeStrokeColor={'#e84118'}
-            inActiveStrokeColor={'#e84118'}
+            activeStrokeColor={"#e84118"}
+            inActiveStrokeColor={"#e84118"}
           >
             <CircularProgressBase
               {...props}
@@ -67,8 +77,8 @@ const MacroProgressView = ({ target, consumed }: { target: Macros, consumed: Mac
               radius={67.5}
               activeStrokeWidth={15}
               inActiveStrokeWidth={15}
-              activeStrokeColor={'#badc58'}
-              inActiveStrokeColor={'#badc58'}
+              activeStrokeColor={"#badc58"}
+              inActiveStrokeColor={"#badc58"}
             >
               <CircularProgressBase
                 {...props}
@@ -77,8 +87,8 @@ const MacroProgressView = ({ target, consumed }: { target: Macros, consumed: Mac
                 radius={55}
                 activeStrokeWidth={15}
                 inActiveStrokeWidth={15}
-                activeStrokeColor={'#18dcff'}
-                inActiveStrokeColor={'#18dcff'}
+                activeStrokeColor={"#18dcff"}
+                inActiveStrokeColor={"#18dcff"}
               >
                 <CircularProgressBase
                   {...props}
@@ -87,67 +97,101 @@ const MacroProgressView = ({ target, consumed }: { target: Macros, consumed: Mac
                   radius={42.5}
                   activeStrokeWidth={15}
                   inActiveStrokeWidth={15}
-                  activeStrokeColor={'#ffA500'}
-                  inActiveStrokeColor={'#ffA500'}
+                  activeStrokeColor={"#ffA500"}
+                  inActiveStrokeColor={"#ffA500"}
                 />
               </CircularProgressBase>
             </CircularProgressBase>
           </CircularProgressBase>
         </Center>
         <VStack className="w-[60%] h-full">
-          <Grid className="gap-y-6 gap-x-0 m-auto" _extra={{ className: "grid-cols-2" }}>
-            {
-              macros.map((macro, index) => {
-                return (
-                  <GridItem _extra={{ className: "col-span-1" }} key={index} className="">
-                    <VStack className="items-center">
-                      <Text size="lg" bold>{macro.name} ({macro.name === "Calories" ? "kcal" : "g"})</Text>
-                      <Text size="xl">{macro.consumed.toFixed()}/{macro.target.toFixed()}</Text>
-                    </VStack>
-                  </GridItem>
-                );
-              })
-            }
+          <Grid
+            className="gap-y-6 gap-x-0 m-auto"
+            _extra={{ className: "grid-cols-2" }}
+          >
+            {macros.map((macro, index) => {
+              return (
+                <GridItem
+                  _extra={{ className: "col-span-1" }}
+                  key={index}
+                  className=""
+                >
+                  <VStack className="items-center">
+                    <Text size="lg" bold>
+                      {macro.name} ({macro.name === "Calories" ? "kcal" : "g"})
+                    </Text>
+                    <Text size="xl">
+                      {macro.consumed.toFixed()}/{macro.target.toFixed()}
+                    </Text>
+                  </VStack>
+                </GridItem>
+              );
+            })}
           </Grid>
         </VStack>
       </HStack>
     </Card>
   );
-}
-
+};
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
-  const [log, setLog] = useState<{ item: Meal, quantity: number }[]>();
-  const [macros, setMacros] = useState<{ target: Macros; consumed: Macros; } | null>();
+  const [log, setLog] = useState<{ item: Meal; quantity: number }[]>();
+  const [macros, setMacros] = useState<{
+    target: Macros;
+    consumed: Macros;
+  } | null>();
   const isFocused = useIsFocused();
-
-  useEffect(() => { getFoodLog(date).then((log) => setLog(log)) }, [date, isFocused]);
-  useEffect(() => { getMacros(date).then((macros) => setMacros(macros)) }, [date, log, isFocused]);
+  const [mealPlan, setMealPlan] = useState<MealPlanData>();
 
 
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    weekday: undefined,
+  };
+
+  useEffect(() => {
+    getFoodLog(date).then((log) => setLog(log));
+  }, [date, isFocused]);
+  useEffect(() => {
+    getMacros(date).then((macros) => setMacros(macros));
+  }, [date, log, isFocused]);
+  useEffect(() => {
+    getMealPlan().then((mealPlan) => setMealPlan(mealPlan));
+  }, [isFocused]);
 
   return (
     // need to change data placeholder!
     <ContentLayout data={1}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <VStack className="w-full px-5" space="2xl">
           <HStack className="w-full items-center justify-start" >
             <Calendar date={date} setDate={setDate} placement="bottom" />
           </HStack>
           <VStack>
             {/* needs to be fixed! - if macro exceeds the target then it glitches! also animation is glitchy!*/}
-            {macros && <MacroProgressView target={macros.target} consumed={macros.consumed} />}
+            {macros && (
+              <MacroProgressView
+                target={macros.target}
+                consumed={macros.consumed}
+              />
+            )}
             <VStack className="mt-10">
               {/* bug - meals not showing */}
               <MealLog title={"Meals logged"} log={log} />
-              <MealLog title={"Meal Plan"} log={[]} />
+              <MealPlan
+                title={"Meal plan"}
+                content={
+                  mealPlan ? mealPlan : { breakfast: [], lunch: [], dinner: [] }
+                }
+              />
             </VStack>
           </VStack>
         </VStack>
       </ScrollView>
     </ContentLayout>
   );
-};
+}
