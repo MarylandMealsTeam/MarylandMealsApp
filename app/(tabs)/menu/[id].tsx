@@ -11,7 +11,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Divider } from "@/components/ui/divider";
 import React, { useState } from "react";
 import { log } from "@/api/logSession";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import { getMenuItem } from "@/api/menuSession";
 import HorizontalMacroView from "@/components/widgets/HorizontalMacroView";
 import NumberSpinner from "@/components/widgets/NumberSpinner";

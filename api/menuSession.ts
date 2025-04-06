@@ -15,8 +15,10 @@ export async function getMenu(diningHalls: string[], allergens: Allergen[]) {
   try {
     const res = await session.get(process.env.EXPO_PUBLIC_DAILYITEMS_URL!, {
       params: {
-        date: "2025-01-28",
+        // date: "2025-01-28",
         page: ++page,
+        // all: true,
+        // term: "eggs",
         // dining_halls: diningHalls.join(","),
         // allergens: allergens.map((a) => a.id).join(","),
       },

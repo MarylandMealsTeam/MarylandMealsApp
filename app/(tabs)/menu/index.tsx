@@ -118,7 +118,7 @@ export default function Food() {
         className="px-5"
         data={menu?.filter((food) => food.menu_item.name.toLowerCase().includes(searchText.toLowerCase()))}
         renderItem={FoodLogMemoView}
-        keyExtractor={(food) => food.id.toString()}
+        keyExtractor={(food) => food.menu_item.id.toString()}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
