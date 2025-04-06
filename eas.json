@@ -1,4 +1,7 @@
 {
+  "cli": {
+    "appVersionSource": "remote"
+  },
   "build": {
     "development-simulator": {
       "developmentClient": true,
@@ -24,7 +27,8 @@
     },
     "production": {
       "channel": "production",
-      "environment": "production"
+      "environment": "production",
+      "autoIncrement": true
     }
   },
   "submit": {
