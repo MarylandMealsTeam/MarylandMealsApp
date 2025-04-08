@@ -1,5 +1,5 @@
 import { FlatList, RefreshControl } from "react-native";
-import { createContext, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { createContext, Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from "react";
 import FoodCard from "@/components/cards/FoodCard";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { CameraIcon, FilterIcon, SearchIcon } from "lucide-react-native";
@@ -15,6 +15,7 @@ import FilterView from "@/components/widgets/FilterView";
 import HelpButton from "@/components/widgets/HelpButton";
 import { Allergen } from "@/types/Allergen";
 import Meal from "@/interfaces/Meal";
+import LoadingSpinner from "@/components/widgets/LoadingSpinner";
 
 const HeaderView = ({ setSearchText }: { setSearchText: Dispatch<SetStateAction<string>> }) => {
 
@@ -86,14 +87,6 @@ export default function Food() {
   // best practices like PureComponent, shouldComponentUpdate,
   // etc. { "contentLength": 9748.3330078125, "dt": 3067, "prevDt": 871 }
 
-  const MenuSpinner = () => {
-    return (
-      <Center>
-        <Spinner size="small" className="py-10 text-primary-500" />
-      </Center>
-    );
-  };
-
   const ListEmptyView = () => {
     return (
       <Center className="w-full h-[75%]">
@@ -104,8 +97,11 @@ export default function Food() {
   };
 
 
-
-  const FoodLogMemoView = useCallback(({ item }: { item: Meal }) => (<FoodCard item={item} />), []);
+  const FoodLogMemoView = useCallback(({ item }: { item: Meal }) => {
+    const MemoizedFoodCard = memo(FoodCard, (prev, next) => { return prev.item.id === next.item.id; });
+    return <MemoizedFoodCard item={item} />;
+  }
+  , []);
 
   // const [filterMenu, setFilterMenu] = useState(searchFilter);
 
@@ -129,7 +125,7 @@ export default function Food() {
         onRefresh={onRefresh}
         ListHeaderComponent={<FilterContext.Provider value={{ setDiningHalls, setAllergens }}><HeaderView setSearchText={setSearchText} /></FilterContext.Provider>}
         ListEmptyComponent={<ListEmptyView />}
-        ListFooterComponent={() => refreshing && <MenuSpinner />}
+        ListFooterComponent={() => refreshing && <LoadingSpinner />}
         initialNumToRender={4}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="always"

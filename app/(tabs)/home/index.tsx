@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react";
 import Calendar from "@/components/widgets/Calendar";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
 import { Center } from "@/components/ui/center";
 import React from "react";
 import { VStack } from "@/components/ui/vstack";
@@ -16,12 +15,7 @@ import Macros from "@/interfaces/Macros";
 import Meal from "@/interfaces/Meal";
 import { Card } from "@/components/ui/card";
 import { CircularProgressBase } from "react-native-circular-progress-indicator";
-import { Divider } from "@/components/ui/divider";
-import { ChevronDownIcon } from "lucide-react-native";
-import { Icon } from "@/components/ui/icon";
 import MealPlan from "@/components/widgets/MealPlan";
-import { UserContext } from "../../../components/navigation/UserProvider";
-import { getUser } from "@/api/userSession";
 import { getMealPlan } from "@/api/aiSession";
 import { MealPlanData } from "@/components/widgets/MealPlan";
 
@@ -46,23 +40,12 @@ const MacroProgressView = ({
   };
 
   return (
-    // <Grid className="gap-y-2 gap-x-2 bg-white rounded-xl" _extra={{ className: "grid-cols-2" }}>
-    //   {
-    //     macros.map((entry, index) => {
-    //       return (
-    //         <GridItem _extra={{ className: "col-span-1" }} key={index}>
-    //           <MacroCard {...entry} />
-    //         </GridItem>
-    //       );
-    //     })
-    //   }
-    // </Grid>
     <Card variant="elevated" className="h-60 rounded-xl">
       <HStack space="lg" className="w-full m-auto justify-between">
         <Center className="w-[40%] pl-2">
           <CircularProgressBase
             {...props}
-            value={consumed.calories}
+            value={consumed.calories > target.calories ? target.calories : consumed.calories}
             maxValue={target.calories}
             radius={80}
             activeStrokeWidth={15}
@@ -72,7 +55,7 @@ const MacroProgressView = ({
           >
             <CircularProgressBase
               {...props}
-              value={consumed.protein}
+              value={consumed.protein > target.protein ? target.protein : consumed.protein}
               maxValue={target.protein}
               radius={67.5}
               activeStrokeWidth={15}
@@ -82,7 +65,7 @@ const MacroProgressView = ({
             >
               <CircularProgressBase
                 {...props}
-                value={consumed.carbs}
+                value={consumed.carbs > target.carbs ? target.carbs : consumed.carbs}
                 maxValue={target.carbs}
                 radius={55}
                 activeStrokeWidth={15}
@@ -92,7 +75,7 @@ const MacroProgressView = ({
               >
                 <CircularProgressBase
                   {...props}
-                  value={consumed.fats}
+                  value={consumed.fats > target.fats ? target.fats : consumed.fats}
                   maxValue={target.fats}
                   radius={42.5}
                   activeStrokeWidth={15}
@@ -144,8 +127,6 @@ export default function Dashboard() {
   const isFocused = useIsFocused();
   const [mealPlan, setMealPlan] = useState<MealPlanData>();
 
-
-
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -180,14 +161,8 @@ export default function Dashboard() {
               />
             )}
             <VStack className="mt-10">
-              {/* bug - meals not showing */}
               <MealLog title={"Meals logged"} log={log} />
-              <MealPlan
-                title={"Meal plan"}
-                content={
-                  mealPlan ? mealPlan : { breakfast: [], lunch: [], dinner: [] }
-                }
-              />
+              <MealPlan title={"Meal plan"} mealPlan={mealPlan} />
             </VStack>
           </VStack>
         </VStack>

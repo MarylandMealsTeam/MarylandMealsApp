@@ -1,4 +1,4 @@
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import { Accordion, AccordionContent, AccordionHeader, AccordionIcon, AccordionItem, AccordionTitleText, AccordionTrigger } from "../ui/accordion";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import React from "react";

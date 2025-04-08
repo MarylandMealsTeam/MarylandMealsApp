@@ -1,3 +1,4 @@
+import { MealPlanData } from "@/components/widgets/MealPlan";
 import axios from "axios";
 
 const session = axios.create({
@@ -10,10 +11,12 @@ export async function getMealPlan() {
   try {
     const res = await session.post(process.env.EXPO_PUBLIC_MENUPLAN_URL!);
     console.log(res.data.plan);
-    return res.data.plan;
+    const str = res.data.plan;
+    const mealPlan: MealPlanData = JSON.parse(str);
+    return mealPlan;
   } catch (error) {
     console.log(error);
-    return null;
+    return;
   }
 }
 

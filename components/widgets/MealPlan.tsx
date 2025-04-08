@@ -13,6 +13,7 @@ import { Heading } from "../ui/heading";
 import { View } from "../ui/view";
 import Meal from "@/interfaces/Meal";
 import FoodCard from "../cards/FoodCard";
+import LoadingSpinner from "./LoadingSpinner";
 
 export interface MealPlanData {
   breakfast: Meal[];
@@ -22,14 +23,11 @@ export interface MealPlanData {
 
 export default function MealPlan({
   title,
-  content,
+  mealPlan,
 }: {
   title: string;
-  content: MealPlanData;
+  mealPlan?: MealPlanData;
 }) {
-  console.log(content);
-  const mealPlan: MealPlanData =
-    typeof content === "string" ? JSON.parse(content) : content;
 
   const renderMealList = (meal?: Meal[]) => (
     <View>
@@ -67,12 +65,19 @@ export default function MealPlan({
           </AccordionTrigger>
         </AccordionHeader>
         <AccordionContent>
-          <Heading className="text-primary-700 text-center">Breakfast</Heading>
-          {renderMealList(mealPlan.breakfast)}
-          <Heading className="text-primary-700 text-center">Lunch</Heading>
-          {renderMealList(mealPlan.lunch)}
-          <Heading className="text-primary-700 text-center">Dinner</Heading>
-          {renderMealList(mealPlan.dinner)}
+          {
+            mealPlan ?
+              <>
+                <Heading className="text-primary-700 text-center">Breakfast</Heading>
+                {renderMealList(mealPlan.breakfast)}
+                <Heading className="text-primary-700 text-center">Lunch</Heading>
+                {renderMealList(mealPlan.lunch)}
+                <Heading className="text-primary-700 text-center">Dinner</Heading>
+                {renderMealList(mealPlan.dinner)}
+              </>
+              :
+              <LoadingSpinner/>
+          }
         </AccordionContent>
       </AccordionItem>
     </Accordion>

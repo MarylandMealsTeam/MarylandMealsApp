@@ -3,14 +3,20 @@ import { memo } from "react";
 import { VStack } from "../ui/vstack";
 import { Text } from "../ui/text";
 import { Button, ButtonText } from "../ui/button";
-import { Meal } from "@/interfaces/Meal";
+import Meal from "@/interfaces/Meal";
 import HorizontalMacroView from "../widgets/HorizontalMacroView";
 import FoodAllergenView from "../widgets/FoodAllergenView";
+import LoadingSpinner from "../widgets/LoadingSpinner";
 
-function FoodCard({ item, quantity }: { item: Meal, quantity?: number }) {
+export default function FoodCard({ item, quantity }: { item: Meal, quantity?: number }) {
+
+  if (!item) {
+    console.log("item is undefined");
+    return <LoadingSpinner />;
+  }
+
   const food = item.menu_item;
   const allergens = food.allergens;
-
 
   const onPress = () => {
     router.push({ pathname: "/menu/[id]", params: { id: food.id } });
@@ -40,5 +46,3 @@ function FoodCard({ item, quantity }: { item: Meal, quantity?: number }) {
     </Button>
   );
 }
-
-export default memo(FoodCard, (prevProps, nextProps) => { return prevProps.item.id === nextProps.item.id; });

@@ -34,7 +34,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle } from "lucide-react-native";
 import { Pressable } from "@/components/ui/pressable";
-import { router, useRouter } from "expo-router";
+import { router, useFocusEffect, useRouter } from "expo-router";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import { login } from "@/api/authenticateSession";
 import { Image } from "@/components/ui/image";
@@ -101,6 +101,8 @@ const LoginView = () => {
 
     if (user) {
       setValidated({ emailValid: true, passwordValid: true });
+      // More robust authentication check is needed - https://docs.expo.dev/router/advanced/authentication/
+      router.back();
       router.replace("/(tabs)/home");
     } else {
       setValidated({ emailValid: false, passwordValid: false });
