@@ -20,7 +20,6 @@ import { Button, ButtonIcon, ButtonText } from "../ui/button"
 import { FilterIcon, HelpCircleIcon } from "lucide-react-native"
 import HelpButton from "./HelpButton"
 import { ScrollView } from "react-native"
-import { Meal } from "@/interfaces/Meal"
 import {
     Actionsheet,
     ActionsheetContent,
@@ -105,7 +104,7 @@ export default function FilterView() {
             <Button variant="link" size="md" className="rounded-md" onPress={() => setShowActionsheet(true)}>
                 <ButtonIcon as={FilterIcon} className="text-primary-500" />
             </Button>
-            <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
+            <Actionsheet isOpen={showActionsheet} onClose={handleClose} snapPoints={[50]}>
                 <ActionsheetBackdrop />
                 <ActionsheetContent>
                     <ActionsheetDragIndicatorWrapper>

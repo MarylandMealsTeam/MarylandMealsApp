@@ -94,19 +94,29 @@ export default function Goals() {
   };
 
   const fetchMacroSuggestions = async () => {
-    const macrosData = await suggestMacros();
-    console.log(macrosData);
-    const newMacros = JSON.parse(macrosData);
+    try {
+      const macrosData = await suggestMacros();
+      console.log(macrosData);
+      const newMacros = JSON.parse(macrosData);
 
-    macros.calories = newMacros.calories;
-    macros.protein = newMacros.protein;
-    macros.carbs = newMacros.carbs;
-    macros.fats = newMacros.fats;
-    console.log(macrosData);
+      // Create a new object instead of modifying the existing one
+      const updatedMacros = {
+        calories: newMacros.calories,
+        protein: newMacros.protein,
+        carbs: newMacros.carbs,
+        fats: newMacros.fats
+      };
 
-    console.log("FETCHING")
+      // Update the backend
+      await update({ goalMacros: updatedMacros });
 
-    update({ goalMacros: macros });
+      // Update the user context to trigger re-render
+      
+
+      console.log("Macros updated successfully");
+    } catch (error) {
+      console.error("Error updating macros:", error);
+    }
   };
 
   const MacroGoals = () => {
